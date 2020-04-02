@@ -2,8 +2,7 @@ import os
 import random
 import numpy as np
 
-class DecDataGenerator:
-
+class Environment:
 
     def read_matrix(self, n, m):
         line = self.f.readline()
@@ -44,9 +43,11 @@ class DecDataGenerator:
         self.observation_names = []
         self.observation_dict = []
 
-        self.has_initial = True
-        self.initial = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.initial = []
+        self.has_initial = False
         # We need to specify the initial belief of each problem manually
+        if filename == 'dectiger.txt':
+            self.has_initial = False
         self.T = []  # T[s][a_0][a_1][s']
         self.O = []  # O[s'][a_0][a_1][o_0][o_1]
         self.R = []  # R[s][a_0][a_1][s'][o_0][o_1]
@@ -56,7 +57,7 @@ class DecDataGenerator:
         self.current_batch_size = 1
 
 
-        self.f = open(filename, 'r')
+        self.f = open('env/' + filename, 'r')
         while True:
             line = self.f.readline()
             if not line:
@@ -130,16 +131,13 @@ class DecDataGenerator:
                         else:
                             self.has_initial = True
                             line = self.f.readline()
-                            pass
-                            # while not len(line) or line.startswith('#'):
-                            #     line = self.f.readline()
-                            # items = line.strip().split(' ')
-                            # for i in range(self.state_size):
-                            #     self.initial.append(float(items[i]))
-                            # self.initial = np.array(self.initial)
-                            # self.initial = list(self.initial / self.initial.sum())
-                            
-                            # print(len(self.initial))
+                            while not len(line) or line.startswith('#'):
+                                line = self.f.readline()
+                            items = line.strip().split(' ')
+                            for i in range(self.state_size):
+                                self.initial.append(float(items[i]))
+                            self.initial = np.array(self.initial)
+                            self.initial = list(self.initial / self.initial.sum())
                     else:
                         print("input format not supported")
                 if self.readline_count == 7:
@@ -175,15 +173,15 @@ class DecDataGenerator:
                             lower.append(0)
                             upper.append(self.action_size[0])
                         else:
-                            lower.append(int(a1))
-                            upper.append(int(a1) + 1)
+                            lower.append(self.action_dict[0][a1])
+                            upper.append(self.action_dict[0][a1] + 1)
 
                         if a2 == '*':
                             lower.append(0)
                             upper.append(self.action_size[1])
                         else:
-                            lower.append(int(a2))
-                            upper.append(int(a2) + 1)
+                            lower.append(self.action_dict[1][a2])
+                            upper.append(self.action_dict[1][a2] + 1)
 
                         s1 = items[2].strip()
                         s2 = items[3].strip()
@@ -192,15 +190,15 @@ class DecDataGenerator:
                             lower.append(0)
                             upper.append(self.state_size)
                         else:
-                            lower.append(int(s1))
-                            upper.append(int(s1) + 1)
+                            lower.append(self.state_dict[s1])
+                            upper.append(self.state_dict[s1] + 1)
 
                         if s2 == '*':
                             lower.append(0)
                             upper.append(self.state_size)
                         else:
-                            lower.append(int(s2))
-                            upper.append(int(s2) + 1)
+                            lower.append(self.state_dict[s2])
+                            upper.append(self.state_dict[s2] + 1)
 
 
                         for a1 in range(lower[0], upper[0]):
@@ -238,15 +236,15 @@ class DecDataGenerator:
                             lower.append(0)
                             upper.append(self.action_size[0])
                         else:
-                            lower.append(int(a1))
-                            upper.append(int(a1) + 1)
+                            lower.append(self.action_dict[0][a1])
+                            upper.append(self.action_dict[0][a1] + 1)
 
                         if a2 == '*':
                             lower.append(0)
                             upper.append(self.action_size[1])
                         else:
-                            lower.append(int(a2))
-                            upper.append(int(a2) + 1)
+                            lower.append(self.action_dict[1][a2])
+                            upper.append(self.action_dict[1][a2] + 1)
 
                         s1 = items[2].strip()
 
@@ -254,8 +252,8 @@ class DecDataGenerator:
                             lower.append(0)
                             upper.append(self.state_size)
                         else:
-                            lower.append(int(s1))
-                            upper.append(int(s1) + 1)
+                            lower.append(self.state_dict[s1])
+                            upper.append(self.state_dict[s1] + 1)
 
                         o1 = items[3].strip().split(' ')[0]
                         o2 = items[3].strip().split(' ')[1]
@@ -263,15 +261,15 @@ class DecDataGenerator:
                             lower.append(0)
                             upper.append(self.observation_size[0])
                         else:
-                            lower.append(int(o1))
-                            upper.append(int(o1) + 1)
+                            lower.append(self.observation_dict[0][o1])
+                            upper.append(self.observation_dict[0][o1] + 1)
 
                         if o2 == '*':
                             lower.append(0)
                             upper.append(self.observation_size[1])
                         else:
-                            lower.append(int(o2))
-                            upper.append(int(o2) + 1)
+                            lower.append(self.observation_dict[1][o2])
+                            upper.append(self.observation_dict[1][o2] + 1)
 
 
                         for a1 in range(lower[0], upper[0]):
@@ -303,15 +301,15 @@ class DecDataGenerator:
                             lower.append(0)
                             upper.append(self.action_size[0])
                         else:
-                            lower.append(int(a1))
-                            upper.append(int(a1) + 1)
+                            lower.append(self.action_dict[0][a1])
+                            upper.append(self.action_dict[0][a1] + 1)
 
                         if a2 == '*':
                             lower.append(0)
                             upper.append(self.action_size[1])
                         else:
-                            lower.append(int(a2))
-                            upper.append(int(a2) + 1)
+                            lower.append(self.action_dict[1][a2])
+                            upper.append(self.action_dict[1][a2] + 1)
 
                         s1 = items[2].strip()
                         s2 = items[3].strip()
@@ -320,15 +318,15 @@ class DecDataGenerator:
                             lower.append(0)
                             upper.append(self.state_size)
                         else:
-                            lower.append(int(s1))
-                            upper.append(int(s1) + 1)
+                            lower.append(self.state_dict[s1])
+                            upper.append(self.state_dict[s1] + 1)
 
                         if s2 == '*':
                             lower.append(0)
                             upper.append(self.state_size)
                         else:
-                            lower.append(int(s2))
-                            upper.append(int(s2) + 1)
+                            lower.append(self.state_dict[s2])
+                            upper.append(self.state_dict[s2] + 1)
 
                         # o1 = items[4].strip().split(' ')[0]
                         # o2 = items[4].strip().split(' ')[1]
@@ -338,15 +336,15 @@ class DecDataGenerator:
                             lower.append(0)
                             upper.append(self.observation_size[0])
                         else:
-                            lower.append(int(o1))
-                            upper.append(int(o1) + 1)
+                            lower.append(self.observation_dict[0][o1])
+                            upper.append(self.observation_dict[0][o1] + 1)
 
                         if o2 == '*':
                             lower.append(0)
                             upper.append(self.observation_size[1])
                         else:
-                            lower.append(int(o2))
-                            upper.append(int(o2) + 1)
+                            lower.append(self.observation_dict[1][o2])
+                            upper.append(self.observation_dict[1][o2] + 1)
 
 
                         for a1 in range(lower[0], upper[0]):
@@ -374,7 +372,7 @@ class DecDataGenerator:
 
 
     # Taken a batch of actions, returns a batch of observations and rewards in one time step
-    def interact_with_environment(self, actions_0, actions_1):
+    def step(self, actions_0, actions_1):
         # input: actions_0[batch_size][1], actions_1[batch_size][1]
         # returns lists: observations_0[batch_size][1], observations_1[batch_size][1], rewards[batch_size][1]
         # the returned rewards have been discounted 
@@ -440,17 +438,4 @@ class DecDataGenerator:
         return actions, observations, rewards
 
 if __name__ == "__main__":
-    pass
-    # dg = DecDataGenerator('boxpushing.txt')
-    # # print(dg.observation_names)
-    # # print(dg.action_names)
-    # # print(np.array(dg.R)[0,0,0,5,:,:])
-    # dg.init_environment(2)
-    # print(len(dg.initial))
-    # print(dg.state_size)
-    # actions_0 = [0, 1]
-    # actions_1 = [2, 1]
-    # observations_0, observations_1, rewards = dg.interact_with_environment(actions_0, actions_1)
-    # print(observations_0)
-    # print(observations_1)
-    # print(rewards)
+    pass 

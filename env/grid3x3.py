@@ -2,8 +2,7 @@ import os
 import random
 import numpy as np
 
-class DecDataGenerator:
-
+class Environment:
 
     def read_matrix(self, n, m):
         line = self.f.readline()
@@ -56,7 +55,8 @@ class DecDataGenerator:
         self.current_batch_size = 1
 
 
-        self.f = open(filename, 'r')
+
+        self.f = open('env/' + filename, 'r')
         while True:
             line = self.f.readline()
             if not line:
@@ -374,7 +374,7 @@ class DecDataGenerator:
 
 
     # Taken a batch of actions, returns a batch of observations and rewards in one time step
-    def interact_with_environment(self, actions_0, actions_1):
+    def step(self, actions_0, actions_1):
         # input: actions_0[batch_size][1], actions_1[batch_size][1]
         # returns lists: observations_0[batch_size][1], observations_1[batch_size][1], rewards[batch_size][1]
         # the returned rewards have been discounted 
@@ -433,24 +433,7 @@ class DecDataGenerator:
             rewards.append(reward_seq)
             samples.append(sample)
             
-        #     for item in sample:
-        #         f.write(str(item) + ' ')
-        #     f.write('\n')
-        # f.close()
         return actions, observations, rewards
 
 if __name__ == "__main__":
     pass
-    # dg = DecDataGenerator('grid3x3.txt')
-    # # print(dg.observation_names)
-    # # print(dg.action_names)
-    # # # print(np.array(dg.R)[0,0,0,5,:,:])
-    # dg.init_environment(2)
-    # print(len(dg.initial))
-    # print(dg.state_size)
-    # actions_0 = [0, 1]
-    # actions_1 = [2, 1]
-    # observations_0, observations_1, rewards = dg.interact_with_environment(actions_0, actions_1)
-    # print(observations_0)
-    # print(observations_1)
-    # print(rewards)
