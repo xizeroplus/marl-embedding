@@ -5,7 +5,8 @@ This is the PyTorch implementation of the paper [Information State Embedding in 
 ```
 @article{mao2020information,
   title={Information State Embedding in Partially Observable Cooperative Multi-Agent Reinforcement Learning},
-  author={Mao, Weichao and Zhang, Kaiqing and Miehling, Erik and Ba{\c{s}}ar, Tamer},
+  author={Mao, Weichao and Zhang, Kaiqing and Miehling, Erik and Başar, Tamer},
+  journal={arXiv preprint arXiv:2004.01098},
   year={2020}
 }
 ```
@@ -18,7 +19,7 @@ This is the PyTorch implementation of the paper [Information State Embedding in 
 
 
 ## Examples
-- Default parameter values: To test the three embedding instances in their default settings, simply run
+- Default parameter values: To test the three embedding instances in their default settings, simply run:
 ```
 python FM-E.py
 python RNN-E.py
@@ -28,6 +29,6 @@ python PCA-E.py
 ```
 python FM-E.py --sequence_size 20 --length 4 --lr 0.01 --task 'boxpushing'
 python RNN-E.py --sequence_size 10 --lr 0.01 --task 'grid3x3'
-python PCA-E.py --sequence_size 20 --pca_length 8 --lr 0.01 --task 'dectiger'
+python PCA-E.py --sequence_size 4 --pca_length 8 --lr 0.01 --task 'dectiger'
 ```
 
