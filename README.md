@@ -1,6 +1,6 @@
 # Information State Embedding in Partially Observable MARL 
 
-This is the PyTorch implementation of the paper [Information State Embedding in Partially Observable Cooperative Multi-Agent Reinforcement Learning](https://arxiv.org/). Please consider citing our paper if you find this code useful:
+This is the PyTorch implementation of the paper [Information State Embedding in Partially Observable Cooperative Multi-Agent Reinforcement Learning](https://arxiv.org/abs/2004.01098). Please consider citing our paper if you find this code useful:
 
 ```
 @article{mao2020information,
